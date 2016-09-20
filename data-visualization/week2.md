@@ -6,19 +6,23 @@ of anger in each group.
 Little data is lost from non-responses. The highest among the questions examined is 5.5% for
 the question on biracial children, which may reflect the sensitive nature of the topic.
 
-In the first table below, there's a large number of Americans in each of the inclusive and exclusive
-categories. In the second table, we see how there the frequency of anger shifts between the two groups.
-For example, 22% of exclusive Americans are Extremely Angry while only 14% of inlclusive Americans are.
-Is this difference statistically significant?
+Based on the response to "I have concerns about having bi-racial/ethnic children", white Americans
+where assigned to Inclusive (423 total, 52%) and Exclusive (346 total, 42.5%) categories. These same
+respondants were asked "Generally speaking, how angry do you feel about the way things are going in
+the country these days?". Exclusive Americans are more likely to answer "Extremely Angry" (22%) than
+Inclusive Americans (13%).
+
+The approval rating for President Obama is 32% among exclusive Americans and 47% among inclusive
+Americans.
 
 ### [African/African American/Black: I have concerns about having bi-racial/ethnic children]
 
 | Response         | Count | PercentofWhites | CategoryAssigned |
 |------------------|----:|----------:|----------:|
-|Agree Strongly    | 140 | 17.2 | exclusive |
-|Agree Somewhat    | 206 | 25.3 | exclusive |
-|Disagree Somewhat | 178 | 21.9 | inclusive |
-|Disagree Strongly | 245 | 30.1 | inclusive |
+|Agree Strongly    | 140 | 17.2 | Exclusive |
+|Agree Somewhat    | 206 | 25.3 | Exclusive |
+|Disagree Somewhat | 178 | 21.9 | Inclusive |
+|Disagree Strongly | 245 | 30.1 | Inclusive |
 
 ### Anger Comparison (Percentage)
 |                           | Extremely Angry    | Very Angry     | Somewhat Angry | A Little Angry | Not At All Angry|
@@ -142,10 +146,59 @@ W1_B4
  4    22.931442
  5     6.855792
 dtype: float64
+
+---------------------------------------------------------------------------
+Do you approve or disapprove of the way Barack Obama is handling his job as President?
+-1 Refused
+1  Approve
+2  Disapprove
+
+Response counts:
+W1_A12
+-1     17
+ 1    317
+ 2    480
+dtype: int64
+Response percentages:
+W1_A12
+-1     2.088452
+ 1    38.943489
+ 2    58.968059
+dtype: float64
+
+---------------------------------------------------------------------------
+Obama job approval among exclusive whites.
+Response counts:
+W1_A12
+-1      3
+ 1    109
+ 2    234
+dtype: int64
+Response percentages:
+W1_A12
+-1     0.867052
+ 1    31.502890
+ 2    67.630058
+dtype: float64
+
+---------------------------------------------------------------------------
+Obama job approval among inclusive whites.
+Response counts:
+W1_A12
+-1      4
+ 1    200
+ 2    219
+dtype: int64
+Response percentages:
+W1_A12
+-1     0.945626
+ 1    47.281324
+ 2    51.773050
+dtype: float64
 ```
 
 # Program
-Source code is available at [week2.py](week2.py). I've copied it here for convenience.
+Source code is available at [week2.py](week2.py). I've copied it here for your convenience.
 ```
 # -*- coding: utf-8 -*-
 """
@@ -228,6 +281,13 @@ on these characteristics?
 3  Disagree Somewhat
 4  Disagree Strongly"""
 
+APPROVE_OBAMA = 'W1_A12'
+APPROVE_OBAMA_Q = """Do you approve or disapprove of the way Barack Obama is handling his job as President?
+-1 Refused
+1  Approve
+2  Disapprove
+"""
+
 whites = ool[(ool[ETHNICITY] == 1)].copy()
 print('Limiting to %d responses from white Americans' % len(whites))
 summarize(whites, ANGER, ANGER_Q)
@@ -236,4 +296,7 @@ exclusive_whites = whites[(whites[CHILD_BLACK] == 1) | (whites[CHILD_BLACK] == 2
 inclusive_whites = whites[(whites[CHILD_BLACK] == 3) | (whites[CHILD_BLACK] == 4)].copy()
 summarize(exclusive_whites, ANGER, 'Anger among white americans that are concerned about having biracial children.')
 summarize(inclusive_whites, ANGER, 'Anger among white americans that are not concerned about having biracial children.')
+summarize(whites, APPROVE_OBAMA, APPROVE_OBAMA_Q)
+summarize(exclusive_whites, APPROVE_OBAMA, 'Obama job approval among exclusive whites.')
+summarize(inclusive_whites, APPROVE_OBAMA, 'Obama job approval among inclusive whites.')
 ```

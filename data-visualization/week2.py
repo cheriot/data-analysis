@@ -79,6 +79,13 @@ on these characteristics?
 3  Disagree Somewhat
 4  Disagree Strongly"""
 
+APPROVE_OBAMA = 'W1_A12'
+APPROVE_OBAMA_Q = """Do you approve or disapprove of the way Barack Obama is handling his job as President?
+-1 Refused
+1  Approve
+2  Disapprove
+"""
+
 whites = ool[(ool[ETHNICITY] == 1)].copy()
 print('Limiting to %d responses from white Americans' % len(whites))
 summarize(whites, ANGER, ANGER_Q)
@@ -87,3 +94,6 @@ exclusive_whites = whites[(whites[CHILD_BLACK] == 1) | (whites[CHILD_BLACK] == 2
 inclusive_whites = whites[(whites[CHILD_BLACK] == 3) | (whites[CHILD_BLACK] == 4)].copy()
 summarize(exclusive_whites, ANGER, 'Anger among white americans that are concerned about having biracial children.')
 summarize(inclusive_whites, ANGER, 'Anger among white americans that are not concerned about having biracial children.')
+summarize(whites, APPROVE_OBAMA, APPROVE_OBAMA_Q)
+summarize(exclusive_whites, APPROVE_OBAMA, 'Obama job approval among exclusive whites.')
+summarize(inclusive_whites, APPROVE_OBAMA, 'Obama job approval among inclusive whites.')
