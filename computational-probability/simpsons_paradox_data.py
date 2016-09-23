@@ -47,3 +47,42 @@ for gender, department, admission in prob_space:
                      admission_mapping[admission]] = prob_space[(gender,
                                                                  department,
                                                                  admission)]
+
+# Instructions given in problemset: https://courses.edx.org/courses/course-v1:MITx+6.008.1x+3T2016/courseware/1__Probability_and_Inference/joint_rv/
+joint_prob_table[gender_mapping['female'], department_mapping['C'], admission_mapping['admitted']]
+joint_prob_gender_admission = joint_prob_table.sum(axis=1)
+joint_prob_gender_admission[gender_mapping['female'], admission_mapping['admitted']]
+
+female_only = joint_prob_gender_admission[gender_mapping['female']]
+prob_admission_given_female = female_only / np.sum(female_only)
+prob_admission_given_female_dict = dict(zip(admission_labels, prob_admission_given_female))
+
+print('Answer 1: %.3f' % prob_admission_given_female_dict['admitted'])
+
+male_only = joint_prob_gender_admission[gender_mapping['male']]
+prob_admission_given_male = male_only / np.sum(male_only)
+prob_admission_given_male_dict = dict(zip(admission_labels, prob_admission_given_male))
+
+print('Answer 2: %.3f' % prob_admission_given_male_dict['admitted'])
+
+print('join_prob_gender_adminssion')
+print(joint_prob_gender_admission)
+admitted_only = joint_prob_gender_admission[:, admission_mapping['admitted']]
+print(admitted_only)
+prob_gender_given_admitted = admitted_only / np.sum(admitted_only)
+prob_gender_given_admitted_dict = dict(zip(gender_labels, prob_gender_given_admitted))
+print(prob_gender_given_admitted_dict)
+
+from collections import defaultdict
+
+joint_prob_dict = defaultdict(lambda: defaultdict(dict))
+for gender, department, admission in prob_space:
+    joint_prob_dict[department][gender][admission] = prob_space[(gender, department, admission)]
+print(joint_prob_dict)
+
+print(admission_labels)
+for department in department_labels:
+    for gender in gender_labels:
+      gd_probs = joint_prob_table[gender_mapping[gender], department_mapping[department]]
+      prob_admission = gd_probs[admission_mapping['admitted']] / np.sum(gd_probs)
+      print('P(admission|%s,%s) = %.3f' % (department, gender[0], prob_admission))
