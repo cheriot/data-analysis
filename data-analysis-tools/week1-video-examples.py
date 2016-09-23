@@ -10,7 +10,7 @@ import pandas
 import statsmodels.formula.api as smf
 import statsmodels.stats.multicomp as multi 
 
-data = pandas.read_csv('nesarc.csv', low_memory=False)
+data = pandas.read_csv('../data/nesarc.csv', low_memory=False)
 
 #setting variables you will be working with to numeric
 data['S3AQ3B1'] = data['S3AQ3B1'].convert_objects(convert_numeric=True)
@@ -37,35 +37,35 @@ sub1['NUMCIGMO_EST']=sub1['USFREQMO'] * sub1['S3AQ3C1']
 sub1['NUMCIGMO_EST']= sub1['NUMCIGMO_EST'].convert_objects(convert_numeric=True)
 
 ct1 = sub1.groupby('NUMCIGMO_EST').size()
-print (ct1)
+print(ct1)
 
 # using ols function for calculating the F-statistic and associated p value
 model1 = smf.ols(formula='NUMCIGMO_EST ~ C(MAJORDEPLIFE)', data=sub1)
 results1 = model1.fit()
-print (results1.summary())
+print(results1.summary())
 
 sub2 = sub1[['NUMCIGMO_EST', 'MAJORDEPLIFE']].dropna()
 
 print ('means for numcigmo_est by major depression status')
 m1= sub2.groupby('MAJORDEPLIFE').mean()
-print (m1)
+print(m1)
 
-print ('standard deviations for numcigmo_est by major depression status')
+print('standard deviations for numcigmo_est by major depression status')
 sd1 = sub2.groupby('MAJORDEPLIFE').std()
-print (sd1)
+print(sd1)
 #i will call it sub3
 sub3 = sub1[['NUMCIGMO_EST', 'ETHRACE2A']].dropna()
 
 model2 = smf.ols(formula='NUMCIGMO_EST ~ C(ETHRACE2A)', data=sub3).fit()
-print (model2.summary())
+print(model2.summary())
 
-print ('means for numcigmo_est by major depression status')
+print('means for numcigmo_est by major depression status')
 m2= sub3.groupby('ETHRACE2A').mean()
-print (m2)
+print(m2)
 
-print ('standard deviations for numcigmo_est by major depression status')
+print('standard deviations for numcigmo_est by major depression status')
 sd2 = sub3.groupby('ETHRACE2A').std()
-print (sd2)
+print(sd2)
 
 mc1 = multi.MultiComparison(sub3['NUMCIGMO_EST'], sub3['ETHRACE2A'])
 res1 = mc1.tukeyhsd()
