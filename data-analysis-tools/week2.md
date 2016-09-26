@@ -2,7 +2,12 @@
 
 The script below examines the association between
 * (categorical explanatory) Opinions of white Americans on having children with a black partner
+  * I have concerns about having bi-racial/ethnic children [African/African American/Black]
+  * Agree Strongly, Agree Somewhat, Disagree Somewhat, Disagree Strongly
 * (categorical response) The level of anger at the direction of America
+  * Generally speaking, how angry do you feel about the way things are going in the country these days?
+  * Extremely angry, Very angry, Somewhat angry, A little angry, Not angry at all
+  * Generated a column MOST\_ANGRY that is 1 for people Extremely or Very Angry, 0 otherwise
 
 A Chi-Square test of independence revealed a significant association between views of biracial children and anger at the direction America is going (X2 = 26.931050798602953, p-value = 6.0865945086013047e-06).
 
