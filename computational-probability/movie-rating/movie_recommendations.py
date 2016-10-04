@@ -83,7 +83,26 @@ def compute_posterior(prior, likelihood, y):
     # that the computer will just make it 0 rather than storing the right
     # value). You need to go to log-domain. Hint: this next line is a good
     # first step.
-    log_prior = np.log(prior)
+    # log_prior = np.log(prior)
+
+    # The formula is a repeated use of the same terms. For each m, enumerate those terms.
+    def px_py_given_x(m, prior_pm):
+        return [likelihood[k,m] for k in y] + [prior_pm]
+    px_py_given_x_for_each_m = [px_py_given_x(m, prior_pm) for [m], prior_pm in np.ndenumerate(prior)]
+
+    # Numerical issues cause these multiplications by small numbers to at some point just produce 0 even when the
+    # product is not actually 0. This will cause problems! To avoid this issue, work in the log domain (natural log,
+    # implemented using NumPy's np.log). Recall that log⁡(ab)=log⁡a+log⁡b for any a>0, and b>0 (and so log⁡(a/b)=log⁡a−log⁡b.
+    # The bottom line is that your code should not be multiplying together a large list of probabilities. It should be
+    # adding the log of these probabilities instead.
+    #
+    # Note that once you take the log of the denominator term in your answer to (b), you should encounter a log of a sum
+    # of exponential terms. Please use the SciPy function scipy.misc.logsumexp to compute this log of the denominator
+    # (scipy.misc.logsumexp provides a numerically stable way to compute the log of the sum of exponential terms; check
+    # the SciPy documentation for how to use this function).
+    log_combined_terms_for_each_m = np.sum(np.log(px_py_given_x_for_each_m), axis=1) # calculate for each x: PX=x * PY|X
+    log_denominator = scipy.misc.logsumexp(log_combined_terms_for_each_m)            # sum for all x: PX=x * PY|X
+    log_answer = log_combined_terms_for_each_m - log_denominator                     # Divide numerator by denominator
 
     #
     # END OF YOUR CODE FOR PART (b)
@@ -214,6 +233,7 @@ def compute_entropy(distribution):
     # - use log base 2
     # - enforce 0log0 = 0
 
+    entropy = 0
     #
     # END OF YOUR CODE FOR PART (f)
     # -------------------------------------------------------------------------
