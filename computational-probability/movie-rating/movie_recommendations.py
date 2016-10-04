@@ -139,6 +139,17 @@ def compute_movie_rating_likelihood(M):
     # probability distribution.
     #
 
+    alpha = 1 # normalization constant
+    for y in range(M):
+        for x in range(M):
+            if y == x:
+                likelihood[y][x] = 2 * alpha
+            else:
+                likelihood[y][x] = alpha / abs(y - x)
+
+    # all columns will sum to 1
+    likelihood = likelihood / np.sum(likelihood, axis=0)
+
     #
     # END OF YOUR CODE FOR PART (c)
     # -------------------------------------------------------------------------
@@ -195,7 +206,12 @@ def infer_true_movie_ratings(num_observations=-1):
 
     # These are the output variables - it's your job to fill them.
     posteriors = np.zeros((num_movies, M))
-    MAP_ratings = np.zeros(num_movies)
+
+    for mIdx, movie_id in enumerate(movie_id_list):
+        observations = movie_data_helper.get_ratings(movie_id)[:num_observations]
+        posteriors[mIdx] = compute_posterior(prior, likelihood, observations)
+
+    MAP_ratings = np.argmax(posteriors, axis=1)
 
     #
     # END OF YOUR CODE FOR PART (d)
@@ -325,6 +341,31 @@ def main():
     # Place your code that calls the relevant functions here.  Make sure it's
     # easy for us graders to run your code. You may want to define multiple
     # functions for each of the parts of this problem, and call them here.
+
+    # part (c)
+    size = 2**4
+    print('(c) likelihood %s' % size)
+    likelihood = compute_movie_rating_likelihood(size)
+    if likelihood.shape != (16, 16):
+        exit('In compute_movie_rating_likelihood: Matrix size is not (M, Mj')
+
+    # part (d)
+    posteriors, MAP_ratings = infer_true_movie_ratings()
+
+    # part (e)
+    # Assume this list is stable.
+    movie_id_list = movie_data_helper.get_movie_id_list()
+    movie_titles = [movie_data_helper.get_movie_name(movie_id) for movie_id in movie_id_list]
+    print('result lengths movie_id_list %s, MAP_ratings %s, posteriors %s' % (len(movie_id_list), len(MAP_ratings), posteriors.shape))
+    results = np.column_stack((movie_id_list, MAP_ratings))
+    # [[movie_id, MAP_rating, posteriors]
+    #  [...]]
+    sort_by_map_rating = results[:,1].argsort()[::-1]
+    top_results = results[sort_by_map_rating]
+    print('top_results')
+    # There are 72 movies rated 10
+    for row in top_results[:73,]:
+        print('%s %s' % (row, movie_titles[row[0]]))
 
     #
     # END OF YOUR CODE FOR TESTING
