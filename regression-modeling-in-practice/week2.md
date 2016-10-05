@@ -1,6 +1,7 @@
 
 # Results
 **y = -27.4772x + 75.8890** where y is the respondent's rating of President Obama and x is the categorization of their anger.
+The p-value is less than 0.0001.
 
 The results of the linear regression model indicate that anger in politics is significantly and negatively associated
 with ratings of President Obama. Specifically, this model indicates that increased anger in politics is associated with
