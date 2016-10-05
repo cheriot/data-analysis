@@ -17,9 +17,9 @@ All data is from the Outlook on Life survey, 2012.
   * 4  A little angry
   * 5  Not angry at all
 * **MOST_ANGRY** Divides **W1_B4** into two groups.
-  * The **explanatory variable**.
-  * 0 for Not agnry at all, A little angry, and Somewhat angry
+  * 0 for Not angry at all, A little angry, and Somewhat angry
   * 1 for Extremely angry and Very angry
-* **W1_D1** [Barack Obama] How would you rate
-  * The *response variable*.
+  * The **explanatory variable**.
+* **W1_D1** How would you rate [Barack Obama]
   * Scale from 0 to 100.
+  * The **response variable**.
