@@ -25,12 +25,36 @@ All data is from the Outlook on Life survey, 2012.
   * Scale from 0 to 100.
   * The **response variable**.
 
+MOST_ANGRY | Count | Portion
+---|---|---
+0  | 1513 | 69.53125
+1  |  663 | 30.46875
+
+![President Obama Ratings Boxplot](president_obama_rating.png)
+![President Obama Ratings by Anger in Boxplots](president_obama_rating_by_anger.png)
+
 # Program Output
 
 ```
 Outlook on Life Surveys, 2012
 Data is 2294 rows, 436 columns
 Define MOST_ANGRY as respondants that are Extremely or Very Angry.
+
+---------------------------------------------------------------------------
+0 is less angry, 1 is more angry
+Response counts:
+MOST_ANGRY
+0    1513
+1     663
+dtype: int64
+Response percentages:
+MOST_ANGRY
+0    69.53125
+1    30.46875
+dtype: float64
+
+<Images are here.>
+
 Data is ready!
 After prep, data is 2176 rows, 3 columns
    W1_B4  W1_D1  MOST_ANGRY
@@ -45,7 +69,7 @@ Dep. Variable:                  W1_D1   R-squared:                       0.144
 Model:                            OLS   Adj. R-squared:                  0.144
 Method:                 Least Squares   F-statistic:                     366.1
 Date:                Wed, 05 Oct 2016   Prob (F-statistic):           1.52e-75
-Time:                        19:05:55   Log-Likelihood:                -10547.
+Time:                        19:47:22   Log-Likelihood:                -10547.
 No. Observations:                2176   AIC:                         2.110e+04
 Df Residuals:                    2174   BIC:                         2.111e+04
 Df Model:                           1
@@ -70,6 +94,8 @@ Warnings:
 ```
 import numpy as np
 import pandas as pd
+import seaborn
+import matplotlib.pyplot as plt
 import statsmodels.formula.api as smf
 
 ool = pd.read_csv('../data/ool_pds.csv', low_memory=False)
@@ -116,8 +142,35 @@ def most_angry(row):
     else:
         return 0
 
+def summarize(data, attr, desc):
+    data[attr] = pd.to_numeric(data[attr], errors='coerce')
+    counts = data.groupby(attr).size()
+    relative = counts * 100 / len(data)
+    print('\n' + '-'*75)
+    print(desc)
+    print('Response counts:')
+    print(counts)
+    print('Response percentages:')
+    print(relative)
+    print('')
+
+
 print('Define MOST_ANGRY as respondants that are Extremely or Very Angry.')
 ool['MOST_ANGRY'] = ool.apply(most_angry, axis=1)
+summarize(ool, 'MOST_ANGRY', '0 is less angry, 1 is more angry')
+
+box = seaborn.boxplot(y=RATE_BARACK, data=ool);
+plt.ylabel('Rating')
+plt.title('Rating of President Obama\n')
+plt.show()
+box.get_figure().savefig('president_obama_rating.png')
+
+split_box = seaborn.boxplot(x='MOST_ANGRY', y=RATE_BARACK, data=ool);
+plt.ylabel('Rating')
+plt.xlabel('MOST_ANGRY where 0 is less angry and 1 is more angry')
+plt.title('Rating of President Obama\n')
+plt.show()
+split_box.get_figure().savefig('president_obama_rating_by_anger.png')
 
 print('Data is ready!')
 print('After prep, data is %d rows, %d columns' % ool.shape)
