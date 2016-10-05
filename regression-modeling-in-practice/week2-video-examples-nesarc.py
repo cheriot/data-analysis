@@ -14,7 +14,7 @@ import statsmodels.formula.api as smf
 # bug fix for display formats to avoid run time errors
 pandas.set_option('display.float_format', lambda x:'%.2f'%x)
 
-data = pandas.read_csv('../data/nesarc.csv', low_memory=False)
+data = pandas.read_csv('../data/nesarc2.csv', low_memory=False)
 
 ############################################################################
 #DATA MANAGEMENT
