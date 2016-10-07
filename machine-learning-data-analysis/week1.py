@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 import sklearn.metrics
+from sklearn.model_selection import cross_val_score
 from sklearn import tree
 from io import StringIO
 import pydotplus
@@ -195,6 +196,7 @@ summarize(ool, 'MOST_ANGRY', '2 category anger')
 predictor_names = ['PoliticalSpectrum', 'Education', 'Gender', 'Ethnicity', 'Income_4']
 predictor_cols = [POLITICAL_SPECTRUM, EDUCATION, GENDER, ETHNICITY, 'INCOME_4']
 target_cols = ['MOST_ANGRY']
+target_class_names = ['LessAngry', 'MostAngry']
 ool = ool[predictor_cols + target_cols].dropna()
 print('Data ready %s.' % (ool.shape,))
 print(ool.head())
@@ -209,17 +211,27 @@ assert pred_train.shape[0] == tar_train.shape[0]
 assert pred_test.shape[0] == tar_test.shape[0]
 
 # Train decision tree
-classifier=DecisionTreeClassifier(max_depth=3, min_samples_leaf=5)
+classifier=DecisionTreeClassifier(max_depth=4, min_samples_leaf=20, class_weight='balanced')
 classifier=classifier.fit(pred_train,tar_train)
 predictions=classifier.predict(pred_test)
-print(sklearn.metrics.confusion_matrix(tar_test,predictions))
+
+# What do these results mean?
+print('A confusion matrix C is such that C_{i, j} is equal to the number of observations known to be in group i but predicted to be in group j.')
+print('Correct results are along the top-left to bottom-right diagonal in the confusion matrix.')
+print('False positives are the top-right.')
+print('False negatives are the bottom-left.')
+print(target_class_names)
+print(sklearn.metrics.confusion_matrix(tar_test,predictions) / predictions.shape[0] * 100)
 print(sklearn.metrics.accuracy_score(tar_test, predictions))
+# Why does this want a Series instead of a DataFrame for the last parameter?
+# What does cross_val_score really calculate?
+print(cross_val_score(classifier, pred_test, tar_test[target_cols[0]]))
 
 # Visual decision tree
 out = StringIO()
-tree.export_graphviz(classifier, out_file=out, feature_names=predictor_names, class_names=['LessAngry', 'MostAngry'], filled=True, rounded=True)
+tree.export_graphviz(classifier, out_file=out, feature_names=predictor_names, class_names=target_class_names, filled=True, rounded=True)
 graph=pydotplus.graph_from_dot_data(out.getvalue())
-with open('political-decision-tree.png', 'wb') as f:
+with open('political-decision-tree2.png', 'wb') as f:
     f.write(graph.create_png())
 
 print('Done. Check political-decision-tree.png')
