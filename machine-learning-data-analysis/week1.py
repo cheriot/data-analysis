@@ -224,7 +224,9 @@ print(target_class_names)
 print(sklearn.metrics.confusion_matrix(tar_test,predictions) / predictions.shape[0] * 100)
 print(sklearn.metrics.accuracy_score(tar_test, predictions))
 # Why does this want a Series instead of a DataFrame for the last parameter?
-# What does cross_val_score really calculate?
+# TODO What does cross_val_score really calculate?
+# TODO How does grid search work?
+# TODO Examine classifier.feature_importances (measured through the eyes of the model!)
 print(cross_val_score(classifier, pred_test, tar_test[target_cols[0]]))
 
 # Visual decision tree
