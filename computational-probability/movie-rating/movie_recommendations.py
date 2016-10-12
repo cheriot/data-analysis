@@ -393,6 +393,10 @@ def main():
     # plt.plot(num_entropy[0], num_entropy[1])
     # plt.show()
 
+    print('Posterior for movie 0')
+    print(posteriors[0])
+    print('Expect')
+    print(np.array([0.00000000e+000,   0.00000000e+000,   0.00000000e+000, 0.00000000e+000,   0.00000000e+000,   0.00000000e+000, 2.08691952e-217,   7.41913971e-104,   1.00000000e+000, 3.12235460e-048,   2.56768318e-058]))
     #
     # END OF YOUR CODE FOR TESTING
     # -------------------------------------------------------------------------
