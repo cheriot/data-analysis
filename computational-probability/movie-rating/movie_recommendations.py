@@ -250,6 +250,14 @@ def compute_entropy(distribution):
     # - enforce 0log0 = 0
 
     entropy = 0
+    import math
+    def calc_entropy(p):
+        if p < 1e-8:
+            return 0
+        return p * math.log(1/p, 2)
+    ventropy = np.vectorize(calc_entropy)
+    entropy = ventropy(distribution).sum()
+
     #
     # END OF YOUR CODE FOR PART (f)
     # -------------------------------------------------------------------------
@@ -281,6 +289,17 @@ def compute_true_movie_rating_posterior_entropies(num_observations):
     # YOUR CODE GOES HERE FOR PART (g)
     #
     # Make use of the compute_entropy function you coded in part (f).
+
+    posteriors, MAP_ratings = infer_true_movie_ratings(num_observations)
+    posterior_entropies = np.zeros(len(MAP_ratings))
+    for i in len(MAP_ratings):
+        posterior_entropies[i] = compute_entropy(posteriors[i][MAP_ratings[i]])
+
+    # movie_id_list = movie_data_helper.get_movie_id_list()
+    # posterior_entropies = np.zeros(len(movie_id_list))
+    # for mIdx, movie_id in enumerate(movie_id_list):
+    #     observations = movie_data_helper.get_ratings(movie_id)[:num_observations]
+    #     posterior_entropies[mIdx] = compute_entropy()
 
     #
     # END OF YOUR CODE FOR PART (g)
@@ -366,6 +385,13 @@ def main():
     # There are 72 movies rated 10
     for row in top_results[:73,]:
         print('%s %s' % (row, movie_titles[row[0]]))
+
+    # plt.figure(1)
+    # plt.title("Average of Entropies")
+    # plt.xlabel("Number of Samples")
+    # plt.ylabel("E (bits)", rotation='horizontal', position=(0, 1.01))
+    # plt.plot(num_entropy[0], num_entropy[1])
+    # plt.show()
 
     #
     # END OF YOUR CODE FOR TESTING
