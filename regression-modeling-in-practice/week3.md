@@ -85,7 +85,7 @@ The leverage plot suggests that some of the data is farther from the mean than e
 are histograms of each variable. The political spectrum looks normal, but the ratings of both Obama and Romney are heavily skewed.
 The skew matches the survey's oversampling of black voters and the significantly high opinion
 of the President among black Americans found in previous assignments! To compensate, we could do the analysis above separately for
-black and white Americans or weight the observations in some way.
+black and white Americans, weight the observations in some way, or add ethnicity to the model.
 
 ![Ratings of President Obama Histogram](obama-rating-histogram.png)
 ![Ratings of Mitt Romney Histogram](romney-rating-histogram.png)
