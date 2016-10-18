@@ -26,6 +26,15 @@ POLITICAL_SPECTRUM_Q = """We hear a lot of talk these days about liberals and co
 -1 Refused                         60      2.6%
 """
 
+# Explanatory variable
+ETHNICITY = 'PPETHM'
+ETHNICITY_Q = """Race / Ethnicity
+1 White, Non-Hispanic
+2 Black, Non-Hispanic
+3 Other, Non-Hispanic
+4 Hispanic
+5 2+ Races, Non-Hispanic"""
+
 
 def prepare_numeric(data, attr):
     data[attr] = pd.to_numeric(data[attr], errors='coerce')
@@ -47,7 +56,14 @@ def center(data, attr):
     return new_col
 
 # Read, prepare, and center data.
-ool_raw = pd.read_csv('../data/ool_pds.csv')[[POLITICAL_SPECTRUM, RATE_BARACK, RATE_ROMNEY]]
+ool_raw = pd.read_csv('../data/ool_pds.csv')[[POLITICAL_SPECTRUM, RATE_BARACK, RATE_ROMNEY, ETHNICITY]]
+
+prepare_numeric(ool_raw, ETHNICITY)
+ool_raw[ETHNICITY] = ool_raw[ETHNICITY].map(
+        {1: 'WHITE',2: 'BLACK',3: 'OTHER',4: 'HISPANIC',5: 'MORE'})
+ethnicity_dummies = pd.get_dummies(ool_raw[ETHNICITY], prefix='ETHNICITY')
+ool_raw = pd.concat([ool_raw, ethnicity_dummies], axis=1)
+
 prepare_numeric(ool_raw, POLITICAL_SPECTRUM)
 prepare_rate(ool_raw, RATE_BARACK)
 prepare_rate(ool_raw, RATE_ROMNEY)
@@ -55,6 +71,7 @@ POLITICAL_SPECTRUM_C = center(ool_raw, POLITICAL_SPECTRUM)
 RATE_BARACK_C = center(ool_raw, RATE_BARACK)
 RATE_ROMNEY_C = center(ool_raw, RATE_ROMNEY)
 ool = ool_raw.dropna()
+
 print('Data ready. %s' % (ool.shape,))
 print(ool.head())
 print('POLITICAL_SPECTRUM.describe()')
@@ -77,7 +94,7 @@ obama_political_scatter.get_figure().savefig('obama-ratings-political-spectrum-s
 plt.show()
 
 # Regress!
-formula = '%s ~ %s + %s' % (RATE_BARACK_C, RATE_ROMNEY_C, POLITICAL_SPECTRUM_C)
+formula = '%s ~ %s + %s + ETHNICITY_WHITE + ETHNICITY_BLACK + ETHNICITY_OTHER + ETHNICITY_HISPANIC + ETHNICITY_MORE' % (RATE_BARACK_C, RATE_ROMNEY_C, POLITICAL_SPECTRUM_C)
 print('Regression formula is %s.' % formula)
 regression = smf.ols(formula, data=ool).fit()
 print(regression.summary())
