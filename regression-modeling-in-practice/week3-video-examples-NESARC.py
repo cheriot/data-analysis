@@ -84,10 +84,10 @@ sub1['crit1'] = sub1.apply (lambda row: crit1 (row),axis=1)
 chk2 = sub1['crit1'].value_counts(sort=False, dropna=False)
 print (chk2)
 chk3 = sub1['S3AQ8B11'].value_counts(sort=False, dropna=False)
-print chk3
+print(chk3)
 chk4 = sub1['S3AQ8B12'].value_counts(sort=False, dropna=False)
-print chk4
-print pandas.crosstab(sub1['S3AQ8B11'], sub1['S3AQ8B12'])
+print(chk4)
+print(pandas.crosstab(sub1['S3AQ8B11'], sub1['S3AQ8B12']))
 
 c1 = sub1['S3AQ8B7J'].value_counts(sort=False, dropna=False)
 print (c1)
