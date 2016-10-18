@@ -11,7 +11,6 @@ blocks denoted by "YOUR CODE GOES HERE" -- you should not need to modify any
 other code!
 """
 
-import matplotlib.pyplot as plt
 import movie_data_helper
 import numpy as np
 import scipy
@@ -208,6 +207,8 @@ def infer_true_movie_ratings(num_observations=-1):
     posteriors = np.zeros((num_movies, M))
 
     for mIdx, movie_id in enumerate(movie_id_list):
+        if mIdx != movie_id:
+            exit('Confused indexes %s, %s' % (mIdx, movie_id))
         observations = movie_data_helper.get_ratings(movie_id)[:num_observations]
         posteriors[mIdx] = compute_posterior(prior, likelihood, observations)
 
@@ -237,7 +238,7 @@ def compute_entropy(distribution):
     # ERROR CHECK -- DO NOT MODIFY
     #
     if np.abs(1 - np.sum(distribution)) > 1e-6:
-        exit('In compute_entropy: distribution should sum to 1.')
+        exit('In compute_entropy: distribution should sum to 1. Found %s' % np.sum(distribution))
     #
     # END OF ERROR CHECK
     # -------------------------------------------------------------------------
@@ -249,8 +250,8 @@ def compute_entropy(distribution):
     # - use log base 2
     # - enforce 0log0 = 0
 
-    entropy = 0
     import math
+
     def calc_entropy(p):
         if p < 1e-8:
             return 0
@@ -292,14 +293,8 @@ def compute_true_movie_rating_posterior_entropies(num_observations):
 
     posteriors, MAP_ratings = infer_true_movie_ratings(num_observations)
     posterior_entropies = np.zeros(len(MAP_ratings))
-    for i in len(MAP_ratings):
-        posterior_entropies[i] = compute_entropy(posteriors[i][MAP_ratings[i]])
-
-    # movie_id_list = movie_data_helper.get_movie_id_list()
-    # posterior_entropies = np.zeros(len(movie_id_list))
-    # for mIdx, movie_id in enumerate(movie_id_list):
-    #     observations = movie_data_helper.get_ratings(movie_id)[:num_observations]
-    #     posterior_entropies[mIdx] = compute_entropy()
+    for i in range(len(MAP_ratings)):
+        posterior_entropies[i] = compute_entropy(posteriors[i]) #[MAP_ratings[i]])
 
     #
     # END OF YOUR CODE FOR PART (g)
@@ -368,23 +363,29 @@ def main():
     if likelihood.shape != (16, 16):
         exit('In compute_movie_rating_likelihood: Matrix size is not (M, Mj')
 
+    print('compute_movie_rating_likelihood(3)')
+    print('Mine:')
+    print(compute_movie_rating_likelihood(3))
+    print("""
+    [[ 0.57142857  0.25        0.14285714]
+     [ 0.28571429  0.5         0.28571429]
+     [ 0.14285714  0.25        0.57142857]]
+    """)
     # part (d)
     posteriors, MAP_ratings = infer_true_movie_ratings()
 
     # part (e)
     # Assume this list is stable.
-    movie_id_list = movie_data_helper.get_movie_id_list()
-    movie_titles = [movie_data_helper.get_movie_name(movie_id) for movie_id in movie_id_list]
-    print('result lengths movie_id_list %s, MAP_ratings %s, posteriors %s' % (len(movie_id_list), len(MAP_ratings), posteriors.shape))
-    results = np.column_stack((movie_id_list, MAP_ratings))
-    # [[movie_id, MAP_rating, posteriors]
-    #  [...]]
-    sort_by_map_rating = results[:,1].argsort()[::-1]
-    top_results = results[sort_by_map_rating]
-    print('top_results')
+    # movie_id_list = movie_data_helper.get_movie_id_list()
+    # movie_titles = [movie_data_helper.get_movie_name(movie_id) for movie_id in movie_id_list]
+    # print('result lengths movie_id_list %s, MAP_ratings %s, posteriors %s' % (len(movie_id_list), len(MAP_ratings), posteriors.shape))
+    # results = np.column_stack((movie_id_list, MAP_ratings))
+    # sort_by_map_rating = results[:,1].argsort()[::-1]
+    # top_results = results[sort_by_map_rating]
+    # print('top_results')
     # There are 72 movies rated 10
-    for row in top_results[:73,]:
-        print('%s %s' % (row, movie_titles[row[0]]))
+    # for row in top_results[:73,]:
+    #     print('%s %s' % (row, movie_titles[row[0]]))
 
     # plt.figure(1)
     # plt.title("Average of Entropies")
@@ -393,10 +394,15 @@ def main():
     # plt.plot(num_entropy[0], num_entropy[1])
     # plt.show()
 
-    print('Posterior for movie 0')
-    print(posteriors[0])
-    print('Expect')
-    print(np.array([0.00000000e+000,   0.00000000e+000,   0.00000000e+000, 0.00000000e+000,   0.00000000e+000,   0.00000000e+000, 2.08691952e-217,   7.41913971e-104,   1.00000000e+000, 3.12235460e-048,   2.56768318e-058]))
+    print('Found row 0 %s %s' % (posteriors[0].sum(), posteriors[0]))
+    zero = np.array([0.00000000e+000,   0.00000000e+000,   0.00000000e+000, 0.00000000e+000,   0.00000000e+000,   0.00000000e+000, 2.08691952e-217,   7.41913971e-104,   1.00000000e+000, 3.12235460e-048,   2.56768318e-058])
+    print('Expect row 0 %s %s' % (zero.sum(), zero))
+    print('Found row 368 %s %s' % (posteriors[368].sum(), posteriors[368]))
+    row_368 = np.array([  1.09994247e-310,   2.34454016e-230,   6.94968263e-101, 5.15112217e-056,   1.00000000e+000,   2.01073200e-027, 3.68109845e-071,   5.25671748e-185,   5.83312733e-293, 0.00000000e+000,   0.00000000e+000])
+    print('Expect row 368 %s %s' % (row_368.sum(), row_368))
+
+    print('compute_true_movie_rating_posterior_entropies 3 %s' % len(compute_true_movie_rating_posterior_entropies(3)))
+    print('compute_true_movie_rating_posterior_entropies 6 %s' % len(compute_true_movie_rating_posterior_entropies(6)))
     #
     # END OF YOUR CODE FOR TESTING
     # -------------------------------------------------------------------------
