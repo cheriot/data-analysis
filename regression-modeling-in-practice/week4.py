@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn
 import statsmodels.formula.api as smf
 
-# Predict MOST_ANGRY with logistic regression using POLITICAL_SPECTRUM
+# Predict MOST_ANGRY with logistic regression using POLITICAL_SPECTRUM and ETHNICITY
 
 # Explanatory variable
 POLITICAL_SPECTRUM = 'W1_C2'
@@ -17,6 +17,15 @@ POLITICAL_SPECTRUM_Q = """We hear a lot of talk these days about liberals and co
 7  Extremely conservative          79      3.4%
 -1 Refused                         60      2.6%
 """
+
+# Explanatory variable
+ETHNICITY = 'PPETHM'
+ETHNICITY_Q = """Race / Ethnicity
+1 White, Non-Hispanic
+2 Black, Non-Hispanic
+3 Other, Non-Hispanic
+4 Hispanic
+5 2+ Races, Non-Hispanic"""
 
 # Response variable
 ANGER = 'W1_B4'
@@ -64,7 +73,7 @@ def summarize(data, attr, desc):
 def crosstab_summarize(data, attr1, attr2, title):
     print_divider()
     print('%s (crosstab %s * %s).' % (title, attr1, attr2))
-    crosstab = pandas.crosstab(data[attr1], data[attr2])
+    crosstab = pd.crosstab(data[attr1], data[attr2])
     relative_crosstab = crosstab.apply(lambda r: 100 * r / r.sum(), axis=1)
     print('Counts')
     print(crosstab)
@@ -72,16 +81,17 @@ def crosstab_summarize(data, attr1, attr2, title):
     print(relative_crosstab)
     return crosstab, relative_crosstab
 
-ool_raw = pd.read_csv('../data/ool_pds.csv')[[POLITICAL_SPECTRUM, ETHNICITY, ANGER, CHILD_BLACK, EDUCATION, AGE]]
+ool_raw = pd.read_csv('../data/ool_pds.csv')[[POLITICAL_SPECTRUM, ETHNICITY, ANGER]]
 
 print('Define MOST_ANGRY as respondents that are Extremely or Very Angry.')
 ool_raw['MOST_ANGRY'] = ool_raw.apply(most_angry, axis=1)
+
+ool_raw['BLACK'] = (ool_raw[ETHNICITY] == 2).map({True: 1, False: 0})
 
 prepare_numeric(ool_raw, 'MOST_ANGRY')
 prepare_numeric(ool_raw, POLITICAL_SPECTRUM)
 prepare_numeric(ool_raw, ETHNICITY)
 prepare_numeric(ool_raw, ANGER)
-prepare_numeric(ool_raw, AGE)
 
 # Create CHILD_BLACK_X binary columns
 # ool_raw = ool_raw[ ool_raw[CHILD_BLACK] != -1 ]
@@ -95,14 +105,20 @@ print(ool.head())
 summarize(ool, 'MOST_ANGRY', ANGER_Q)
 crosstab_summarize(ool, POLITICAL_SPECTRUM, ANGER, 'Anger and political spectrum among americans')
 
+def regres(formula):
+    print('Logistic regression formula: %s' % formula)
+    regression = smf.logit(formula, data=ool).fit()
+    print(regression.summary())
+    conf_int = regression.conf_int()
+    conf_int['OddsRatio'] = regression.params
+    conf_int.columns = ['Lower CI', 'Upper CI', 'OddsRatio']
+    print(np.exp(conf_int))
+
 # Don't use a dummy variable for every single category to avoid the dummy variable trap
 # where perfect multicollinearity occurs. Using C() in the formula does this automatically.
 # Use category 4, Moderate; middle of the road, as the baseline.
 # Understand P > |z| with http://logisticregressionanalysis.com/1577-what-are-z-values-in-logistic-regression/
-formula = "MOST_ANGRY ~ C(%s, Treatment(reference=4))" % (POLITICAL_SPECTRUM)
-regression = smf.logit(formula, data=ool).fit()
-print(regression.summary())
-conf_int = regression.conf_int()
-conf_int['OddsRatio'] = regression.params
-conf_int.columns = ['Lower CI', 'Upper CI', 'OddsRatio']
-print(numpy.exp(conf_int))
+regres("MOST_ANGRY ~ C(%s, Treatment(reference=4))" % (POLITICAL_SPECTRUM))
+
+# Does the oversampling of black americans moderate the relationship?
+regres("MOST_ANGRY ~ C(%s, Treatment(reference=4)) + BLACK" % (POLITICAL_SPECTRUM))
