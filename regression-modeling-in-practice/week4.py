@@ -98,6 +98,7 @@ crosstab_summarize(ool, POLITICAL_SPECTRUM, ANGER, 'Anger and political spectrum
 # Don't use a dummy variable for every single category to avoid the dummy variable trap
 # where perfect multicollinearity occurs. Using C() in the formula does this automatically.
 # Use category 4, Moderate; middle of the road, as the baseline.
+# Understand P > |z| with http://logisticregressionanalysis.com/1577-what-are-z-values-in-logistic-regression/
 formula = "MOST_ANGRY ~ C(%s, Treatment(reference=4))" % (POLITICAL_SPECTRUM)
 regression = smf.logit(formula, data=ool).fit()
 print(regression.summary())
