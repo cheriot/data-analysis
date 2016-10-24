@@ -110,8 +110,13 @@ for i=1:num_neg_examples
     this_case = neg_examples(i,:);
     x = this_case'; %Hint
     activation = this_case*w;
+    learning_rate = 1;
     if (activation >= 0)
         %YOUR CODE HERE
+        w_next = w - learning_rate * x;
+        fprintf(['this_case:\t',mat2str(this_case), '\n']);
+        fprintf(['x:\t',mat2str(x),'\n']);
+        w = w_next;
     end
 end
 for i=1:num_pos_examples
@@ -120,6 +125,10 @@ for i=1:num_pos_examples
     activation = this_case*w;
     if (activation < 0)
         %YOUR CODE HERE
+        w_next = w + learning_rate * x;
+        % fprintf(['Current weight vector:\t',mat2str(w), '\n']);
+        % fprintf(['Next weight vector:\t',mat2str(w_next),'\n']);
+        w = w_next;
     end
 end
 
