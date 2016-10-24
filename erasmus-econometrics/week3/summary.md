@@ -1,5 +1,5 @@
 # Econometrics Week 3 Test
-All results are from the python library statsmodels. The code can be found [here](test_exer_3.py).
+All results are from the python library statsmodels. The code can be found [here](https://github.com/cheriot/data-analysis/blob/master/erasmus-econometrics/week3/test_exer_3.py).
 
 #### (a)  Use general-to-specific to come to a model.  Start by regressing the federal funds rate on the other 7 variables and eliminate 1 variable at a time.
 1. The highest p-value and lowest t statistic is for UNEMPL (t-value 1.059, p-value 0.290) so remove it from the model.

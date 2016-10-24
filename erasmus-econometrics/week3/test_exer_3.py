@@ -79,4 +79,6 @@ print('\nTest for break at January 1980')
 break_index = data[ data['OBS'] == '1980:1' ].index.tolist()[0]
 print('break at index %s' % break_index)
 print(het_goldfeldquandt(taylor_regres.resid, taylor_regres.model.exog, split=break_index, alternative='decreasing'))
+# Useful example of how to actually use a Chow test:
+# https://thetarzan.wordpress.com/2011/06/16/the-chow-test-in-r-a-case-study-of-yellowstones-old-faithful-geyser/
 print(het_goldfeldquandt(taylor_regres.resid, taylor_regres.model.exog, split=break_index, alternative='increasing'))
