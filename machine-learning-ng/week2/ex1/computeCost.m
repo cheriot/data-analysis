@@ -13,9 +13,14 @@ J = 0;
 % Instructions: Compute the cost of a particular choice of theta
 %               You should set J to the cost.
 
-
-
-
+% X (97,2)
+% y (97, 1)
+% theta (2, 1)
+% h(x) = θ'x for each x
+H = X * theta;                         % (97,1)
+Diff = H - y;                          % (97,1)
+SquareDiff = Diff .^ 2;                % (97,1)
+J = sum(SquareDiff) / (2 * rows(X));   % 1
 
 % =========================================================================
 

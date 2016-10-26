@@ -17,15 +17,21 @@ for iter = 1:num_iters
     %       of the cost function (computeCostMulti) and gradient here.
     %
 
+    % X          (47,3)
+    % y          (47,1)
+    % theta       (3,1)
+    % alpha         .01
+    % num_inters    400
 
-
-
-
-
-
-
-
-
+    % Method 1 works, but ain't pretty.
+    % h(x) = θ'x for each x
+    % theta(j) = theta(j) - (alpha/rows(X)) * sum((h(x) - y) * xj for m xj's)
+    % H = X * theta;       % (47,1)
+    % Diff = H - y;        % (47,1)
+    % Portion = Diff .* X; % (47,3)
+    % Delta = (alpha/rows(X)) * sum(Portion)'; % (3,1)
+    % theta = theta - Delta
+    theta = theta - (X' * (X * theta - y)) * (alpha/rows(X));
 
     % ============================================================
 

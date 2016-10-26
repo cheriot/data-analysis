@@ -13,9 +13,20 @@ J = 0;
 % Instructions: Compute the cost of a particular choice of theta
 %               You should set J to the cost.
 
+% Vectorization figured out for computeCost.m
+% X (47,3)
+% y (47,1)
+% theta (3, 1)
+% h(x) = θ'x for each x
+% H = X * theta;                         % (47,1)
+% Diff = H - y;                          % (47,1)
+% SquareDiff = Diff .^ 2;                % (47,1)
+% J = sum(SquareDiff) / (2 * rows(X))    % 1
+% J = sum((X*theta - y).^2) / (2 * rows(X)) % The above in one line.
 
-
-
+% Vectorization suggested by the assignment. Mine doesn't compute X * theta - y
+% twice, but this one does look nicer.
+J = (X * theta - y)' * (X * theta - y) / (2 * rows(X));
 
 % =========================================================================
 
